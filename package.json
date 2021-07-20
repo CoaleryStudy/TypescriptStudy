@@ -1,0 +1,35 @@
+{
+  "name": "typescriptstudy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoaleryStudy/TypescriptStudy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CoaleryStudy/TypescriptStudy/issues"
+  },
+  "homepage": "https://github.com/CoaleryStudy/TypescriptStudy#readme",
+  "dependencies": {
+    "prettier": "^2.3.2",
+    "tslint-config-prettier": "^1.18.0"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "useTabs": false,
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "semi": true,
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  }
+}
