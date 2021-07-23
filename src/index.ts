@@ -1,18 +1,30 @@
-let arr: Array<number> = [1, 2, 3];
-let x: [string, number] = ['Hello', 10];
-console.log(x);
-
-enum Color {
-  Red = 1,
-  Green = 2,
-  Blue = 4,
+interface SquareConfig {
+  color?: string;
+  width?: number;
 }
-let color: Color = Color.Red;
-console.log(color);
 
-console.log(Color[color]);
+interface LabeledValue {
+  label: string;
+}
 
-let someValue: any = 'this is a string';
-let strLength: number = (someValue as string).length;
+function createSquare(config: SquareConfig): { color: string; area: number } {
+  let newSquare = { color: 'white', area: 100 };
+  if (config.color) {
+    newSquare.color = config.color;
+  }
+  if (config.width) {
+    newSquare.area = config.width * config.width;
+  }
+  return newSquare;
+}
 
-console.log(strLength);
+function printLabel(labeledObj: LabeledValue) {
+  console.log(labeledObj.label);
+}
+
+const myObj2 = { colour: 100, width: 100 };
+let mySquare = createSquare(myObj2);
+let mySquare2 = createSquare({ width: 100, colour: 'Color' } as SquareConfig);
+
+const myObj = { size: 10, label: 'Size 10 Object' };
+printLabel(myObj);
