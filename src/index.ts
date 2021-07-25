@@ -1,23 +1,34 @@
-interface ErrorHandling {
-  success: boolean;
-  error?: { message: string };
+class Person {
+  constructor(public name: string) {}
 }
 
-interface ArtworksData {
-  artworks: { title: string }[];
+interface Loggable {
+  log(name: string): void;
 }
 
-interface ArtistsData {
-  artists: { name: string }[];
-}
-
-type ArtworksResponse = ArtworksData & ErrorHandling;
-type ArtistsResponse = ArtistsData & ErrorHandling;
-
-const handleArtistsResponse = (response: ArtistsResponse) => {
-  if (response.error) {
-    console.error(response.error.message);
-    return;
+class ConsoleLogger implements Loggable {
+  log(name: string) {
+    console.log(`Hello, I'm ${name}.`);
   }
-  console.log(response.artists);
-};
+}
+
+function extend<First extends {}, Second extends {}>(
+  first: First,
+  second: Second
+): First & Second {
+  const result: Partial<First & Second> = {};
+  for (const prop in first) {
+    if (first.hasOwnProperty(prop)) {
+      (result as First)[prop] = first[prop];
+    }
+  }
+  for (const prop in second) {
+    if (second.hasOwnProperty(prop)) {
+      (result as Second)[prop] = second[prop];
+    }
+  }
+  return result as First & Second;
+}
+
+const jim = extend(new Person('Jim'), ConsoleLogger.prototype);
+jim.log(jim.name);
