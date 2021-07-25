@@ -1,27 +1,33 @@
-let suits = ['hearts', 'spades', 'clubs', 'diamonds'];
+type NetworkLoadingState = {
+  state: 'loading';
+};
 
-function pickCard(x: { suit: string; card: number }[]): number;
-function pickCard(x: number): { suit: string; card: number };
+type NetworkFailedState = {
+  state: 'failed';
+  code: number;
+};
 
-function pickCard(x: any): any {
-  if (typeof x == 'object') {
-    let pickedCard = Math.floor(Math.random() * x.length);
-    return pickedCard;
-  }
-  // 그렇지 않다면 그냥 card를 선택합니다.
-  else if (typeof x == 'number') {
-    let pickedSuit = Math.floor(x / 13);
-    return { suit: suits[pickedSuit], card: x % 13 };
+type NetworkSuccessState = {
+  state: 'success';
+  response: {
+    title: string;
+    duration: number;
+    summary: string;
+  };
+};
+
+type NetworkState =
+  | NetworkLoadingState
+  | NetworkFailedState
+  | NetworkSuccessState;
+
+function networkStatus(state: NetworkState): string {
+  switch (state.state) {
+    case 'loading':
+      return 'Downloading...';
+    case 'failed':
+      return `Error ${state.code} downloading`;
+    case 'success':
+      return `Downloaded ${state.response.title} - ${state.response.summary}`;
   }
 }
-
-let myDeck = [
-  { suit: 'diamonds', card: 2 },
-  { suit: 'spades', card: 10 },
-  { suit: 'hearts', card: 4 },
-];
-let pickedCard1 = myDeck[pickCard(myDeck)];
-console.log('card: ' + pickedCard1.card + ' of ' + pickedCard1.suit);
-
-let pickedCard2 = pickCard(15);
-console.log('card: ' + pickedCard2.card + ' of ' + pickedCard2.suit);
