@@ -1,30 +1,20 @@
-abstract class Department {
-  constructor(public name: string) {}
-
-  printName(): void {
-    console.log('Department name: ' + this.name);
-  }
-
-  abstract printMeeting(): void; // 반드시 파생된 클래스에서 구현되어야 합니다.
+enum LogLevel {
+  ERROR,
+  WARN,
+  INFO,
+  DEBUG,
 }
 
-class AccountingDepartment extends Department {
-  constructor() {
-    super('Accounting and Auditing'); // 파생된 클래스의 생성자는 반드시 super()를 호출해야 합니다.
-  }
+type LogLevelStrings = keyof typeof LogLevel;
 
-  printMeeting(): void {
-    console.log('The Accounting Department meets each Monday at 10am.');
-  }
-
-  generateReports(): void {
-    console.log('Generating accounting reports...');
+function printImportant(key: LogLevelStrings, message: string) {
+  const num = LogLevel[key];
+  if (num <= LogLevel.WARN) {
+    console.log('Log level key is :', key);
+    console.log('Log Level value is :', num);
+    console.log('Log level message is :', message);
   }
 }
 
-let department: Department; // 추상 타입의 레퍼런스를 생성합니다
-// department = new Department(); // 오류: 추상 클래스는 인스턴스화 할 수 없습니다
-department = new AccountingDepartment(); // 추상이 아닌 하위 클래스를 생성하고 할당합니다
-department.printName();
-department.printMeeting();
-// department.generateReports(); // 오류: 선언된 추상 타입에 메서드가 존재하지 않습니다
+printImportant('ERROR', 'This is a message');
+console.log(LogLevel[LogLevel.DEBUG]);
