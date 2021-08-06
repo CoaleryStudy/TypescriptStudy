@@ -1,90 +1,32 @@
-function identity<T>(arg: T): T {
-  return arg;
+function extend<S extends {}, T extends {}>(first: S, second: T): S & T {
+  const result: Partial<S & T> = {};
+  for (const prop in first) {
+    if (first.hasOwnProperty(prop)) {
+      (result as S)[prop] = first[prop];
+    }
+  }
+  for (const prop in second) {
+    if (second.hasOwnProperty(prop)) {
+      (result as T)[prop] = second[prop];
+    }
+  }
+  return result as S & T;
 }
 
-let output = identity('myString');
-console.log(typeof output);
-
-function loggingIdentity<T>(arg: Array<T>): Array<T> {
-  console.log(arg.length);
-  return arg;
+class Person {
+  constructor(public name: string) {}
 }
 
-let output2 = loggingIdentity<number>([1, 2, 3]);
-console.log(output2);
-
-let myIdentity1: <T>(arg: T) => T = identity;
-let myIdentity2: <U>(arg: U) => U = identity;
-let myIdentity3: { <T>(arg: T): T } = identity;
-
-interface GenericIdentityFn<T> {
-  (arg: T): T;
+interface Loggable {
+  log(name: string): void;
 }
 
-let myIdentity4: GenericIdentityFn<number> = identity;
-
-class GenericNumber<T> {
-  zeroValue?: T;
-  add?: (x: T, y: T) => T;
+class ConsoleLogger implements Loggable {
+  log(name: string) {
+    console.log(`Hello, I'm ${name}.`);
+  }
 }
 
-let myGenericNumber = new GenericNumber<number>();
-myGenericNumber.zeroValue = 0;
-myGenericNumber.add = (x, y) => x + y;
-console.log(myGenericNumber.add(5, myGenericNumber.zeroValue));
-
-let stringNumeric = new GenericNumber<string>();
-stringNumeric.zeroValue = '';
-stringNumeric.add = (x, y) => x + y;
-console.log(stringNumeric.add(stringNumeric.zeroValue, 'test'));
-
-interface Lengthwise {
-  length: number;
-}
-
-function loggingIdentityForLengthwise<T extends Lengthwise>(arg: T): T {
-  console.log(arg.length);
-  return arg;
-}
-
-loggingIdentityForLengthwise([1, 2, 3]);
-loggingIdentityForLengthwise('12531235');
-loggingIdentityForLengthwise({ length: 10, value: 3 });
-
-function getProperty<T, K extends keyof T>(obj: T, key: K) {
-  return obj[key];
-}
-
-const x = { a: 1, b: 2, c: 3, d: 4 };
-
-getProperty(x, 'a');
-// getProperty(x, "m"); // Error!
-
-// * * *
-
-class BeeKeeper {
-  hasMask?: boolean;
-}
-
-class ZooKeeper {
-  nametag?: string;
-}
-
-class Animal {
-  numLegs?: number;
-}
-
-class Bee extends Animal {
-  keeper?: BeeKeeper;
-}
-
-class Lion extends Animal {
-  keeper?: ZooKeeper;
-}
-
-function createInstance<A extends Animal>(c: { new (): A }): A {
-  return new c();
-}
-
-createInstance(Lion).keeper?.nametag;
-createInstance(Bee).keeper?.hasMask;
+const jim = extend(new Person('Jim'), ConsoleLogger.prototype);
+jim.log(jim.name);
+console.log(typeof jim);
