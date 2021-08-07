@@ -1,32 +1,68 @@
-function extend<S extends {}, T extends {}>(first: S, second: T): S & T {
-  const result: Partial<S & T> = {};
-  for (const prop in first) {
-    if (first.hasOwnProperty(prop)) {
-      (result as S)[prop] = first[prop];
-    }
-  }
-  for (const prop in second) {
-    if (second.hasOwnProperty(prop)) {
-      (result as T)[prop] = second[prop];
-    }
-  }
-  return result as S & T;
+interface Bird {
+  fly(): void;
+  layEggs(): void;
 }
 
-class Person {
-  constructor(public name: string) {}
+interface Fish {
+  swim(): void;
+  layEggs(): void;
 }
 
-interface Loggable {
-  log(name: string): void;
+function isFish(pet: Fish | Bird): pet is Fish {
+  return 'swim' in pet;
 }
 
-class ConsoleLogger implements Loggable {
-  log(name: string) {
-    console.log(`Hello, I'm ${name}.`);
+function doIt(pet: Fish | Bird): void {
+  if (isFish(pet)) {
+    pet.swim(); // Pet is Fish
+  } else {
+    pet.fly(); // Pet is Bird
   }
 }
 
-const jim = extend(new Person('Jim'), ConsoleLogger.prototype);
-jim.log(jim.name);
-console.log(typeof jim);
+// -----------------------------------------------------------------------
+
+function padLeft(value: string, padding: string | number): string {
+  if (typeof padding === 'number') {
+    return Array(padding + 1).join(' ') + value;
+  } else if (typeof padding === 'string') {
+    return padding + value;
+  }
+  throw new Error(`Expected string or number, got '${padding}'.`);
+}
+
+// -----------------------------------------------------------------------
+
+interface Padder {
+  getPaddingString(): string;
+}
+
+class SpaceRepeatingPadder implements Padder {
+  constructor(private numSpaces: number) {}
+  getPaddingString(): string {
+    return Array(this.numSpaces + 1).join(' ');
+  }
+}
+
+class StringPadder implements Padder {
+  constructor(private value: string) {}
+  getPaddingString(): string {
+    return this.value;
+  }
+}
+
+function getRandomPadder(): SpaceRepeatingPadder | StringPadder {
+  return Math.random() < 0.5
+    ? new SpaceRepeatingPadder(4)
+    : new StringPadder(' ');
+}
+
+let padder: Padder = getRandomPadder();
+
+if (padder instanceof SpaceRepeatingPadder) {
+  console.log('SpaceRepeatingPadder');
+  console.log(padder.getPaddingString() + '안녕');
+} else if (padder instanceof StringPadder) {
+  console.log('StringPadder');
+  console.log(padder.getPaddingString() + '안녕');
+}
