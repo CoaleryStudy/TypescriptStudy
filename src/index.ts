@@ -1,68 +1,42 @@
-interface Bird {
-  fly(): void;
-  layEggs(): void;
+function f(x: number, y?: number) {
+  return x + (y || 0);
 }
 
-interface Fish {
-  swim(): void;
-  layEggs(): void;
-}
+console.log(f(1, 2));
+console.log(f(1));
+console.log(f(1, undefined));
+// console.log(f(1, null)); // Error!
 
-function isFish(pet: Fish | Bird): pet is Fish {
-  return 'swim' in pet;
-}
+class C {
+  a: number;
+  b?: number;
 
-function doIt(pet: Fish | Bird): void {
-  if (isFish(pet)) {
-    pet.swim(); // Pet is Fish
-  } else {
-    pet.fly(); // Pet is Bird
+  constructor(a: number) {
+    this.a = a;
   }
 }
 
-// -----------------------------------------------------------------------
+let c = new C(1);
+c.a = 12;
+// C.a = undefined; // Error!
+c.b = 13;
+c.b = undefined;
+// c.b = null; // Error!
 
-function padLeft(value: string, padding: string | number): string {
-  if (typeof padding === 'number') {
-    return Array(padding + 1).join(' ') + value;
-  } else if (typeof padding === 'string') {
-    return padding + value;
+function f2(sn: string | null): string {
+  return sn || 'default';
+}
+
+console.log(f2(null));
+console.log(f2('Hello'));
+
+function f3(name: string | null): string {
+  function postfix(epithet: string) {
+    return name!.charAt(0) + '. the ' + epithet;
   }
-  throw new Error(`Expected string or number, got '${padding}'.`);
+  name = name || 'Bob';
+  return postfix('great');
 }
 
-// -----------------------------------------------------------------------
-
-interface Padder {
-  getPaddingString(): string;
-}
-
-class SpaceRepeatingPadder implements Padder {
-  constructor(private numSpaces: number) {}
-  getPaddingString(): string {
-    return Array(this.numSpaces + 1).join(' ');
-  }
-}
-
-class StringPadder implements Padder {
-  constructor(private value: string) {}
-  getPaddingString(): string {
-    return this.value;
-  }
-}
-
-function getRandomPadder(): SpaceRepeatingPadder | StringPadder {
-  return Math.random() < 0.5
-    ? new SpaceRepeatingPadder(4)
-    : new StringPadder(' ');
-}
-
-let padder: Padder = getRandomPadder();
-
-if (padder instanceof SpaceRepeatingPadder) {
-  console.log('SpaceRepeatingPadder');
-  console.log(padder.getPaddingString() + '안녕');
-} else if (padder instanceof StringPadder) {
-  console.log('StringPadder');
-  console.log(padder.getPaddingString() + '안녕');
-}
+console.log(f3('Hello'));
+console.log(f3(null));
