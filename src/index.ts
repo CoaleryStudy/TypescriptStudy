@@ -1,42 +1,46 @@
-function f(x: number, y?: number) {
-  return x + (y || 0);
-}
+type Name = string;
+type NameResolver = () => string;
+type NameOrResolver = Name | NameResolver;
 
-console.log(f(1, 2));
-console.log(f(1));
-console.log(f(1, undefined));
-// console.log(f(1, null)); // Error!
-
-class C {
-  a: number;
-  b?: number;
-
-  constructor(a: number) {
-    this.a = a;
+function getName(n: NameOrResolver): Name {
+  if (typeof n === 'string') {
+    return n;
+  } else {
+    return n();
   }
 }
 
-let c = new C(1);
-c.a = 12;
-// C.a = undefined; // Error!
-c.b = 13;
-c.b = undefined;
-// c.b = null; // Error!
+console.log(getName('Hi'));
+console.log(getName(() => 'Hi'));
 
-function f2(sn: string | null): string {
-  return sn || 'default';
+type Container<T> = { value: T };
+
+type Tree<T> = {
+  value: T;
+  left: Tree<T>;
+  right: Tree<T>;
+};
+
+type LinkedList<T> = T & { next?: LinkedList<T> };
+
+interface Person {
+  name: string;
 }
 
-console.log(f2(null));
-console.log(f2('Hello'));
+let people: LinkedList<Person> = {
+  name: 'A',
+  next: {
+    name: 'B',
+  },
+};
 
-function f3(name: string | null): string {
-  function postfix(epithet: string) {
-    return name!.charAt(0) + '. the ' + epithet;
-  }
-  name = name || 'Bob';
-  return postfix('great');
+let s = people.name;
+s = people.next!.name;
+
+type Alias = { num: number };
+interface Interface {
+  num: number;
 }
 
-console.log(f3('Hello'));
-console.log(f3(null));
+declare function aliased(arg: Alias): Alias;
+declare function interfaced(arg: Interface): Interface;
