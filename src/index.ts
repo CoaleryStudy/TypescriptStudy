@@ -1,46 +1,41 @@
-type Name = string;
-type NameResolver = () => string;
-type NameOrResolver = Name | NameResolver;
+type Easing = 'ease-in' | 'ease-out' | 'ease-in-out';
 
-function getName(n: NameOrResolver): Name {
-  if (typeof n === 'string') {
-    return n;
-  } else {
-    return n();
+class UIElement {
+  animate(dx: number, dy: number, easing: Easing) {
+    if (easing === 'ease-in') {
+    } else if (easing === 'ease-out') {
+    } else if (easing === 'ease-in-out') {
+    }
   }
 }
 
-console.log(getName('Hi'));
-console.log(getName(() => 'Hi'));
+let button = new UIElement();
+button.animate(0, 0, 'ease-in');
+// button.animate(0, 0, 'uneasy'); // Error!
 
-type Container<T> = { value: T };
+// ------------------------------------------------------------
 
-type Tree<T> = {
-  value: T;
-  left: Tree<T>;
-  right: Tree<T>;
-};
+interface SomeElement {}
 
-type LinkedList<T> = T & { next?: LinkedList<T> };
+function createElement(tagName: 'img'): SomeElement;
+function createElement(tagName: 'input'): SomeElement;
+function createElement(tagName: string): SomeElement {
+  console.log(tagName);
+  return {};
+}
+createElement('img');
+createElement('input');
+// createElement('some'); // Error!
 
-interface Person {
-  name: string;
+// ------------------------------------------------------------
+
+type DiceResult = 1 | 2 | 3 | 4 | 5 | 6;
+function rollDice(): DiceResult {
+  const diceResult = Math.random() * 6 + 1;
+  return diceResult as DiceResult;
 }
 
-let people: LinkedList<Person> = {
-  name: 'A',
-  next: {
-    name: 'B',
-  },
-};
-
-let s = people.name;
-s = people.next!.name;
-
-type Alias = { num: number };
-interface Interface {
-  num: number;
-}
-
-declare function aliased(arg: Alias): Alias;
-declare function interfaced(arg: Interface): Interface;
+console.log(rollDice());
+console.log(rollDice());
+console.log(rollDice());
+console.log(rollDice());
