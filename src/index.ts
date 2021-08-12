@@ -1,41 +1,59 @@
-type Easing = 'ease-in' | 'ease-out' | 'ease-in-out';
+interface Square {
+  kind: 'square';
+  size: number;
+}
 
-class UIElement {
-  animate(dx: number, dy: number, easing: Easing) {
-    if (easing === 'ease-in') {
-    } else if (easing === 'ease-out') {
-    } else if (easing === 'ease-in-out') {
-    }
+interface Rectangle {
+  kind: 'rectangle';
+  width: number;
+  height: number;
+}
+
+interface Circle {
+  kind: 'circle';
+  radius: number;
+}
+
+type Shape = Square | Rectangle | Circle;
+
+function area(s: Shape) {
+  switch (s.kind) {
+    case 'square':
+      return s.size * s.size;
+    case 'rectangle':
+      return s.height * s.width;
+    case 'circle':
+      return Math.PI * s.radius ** 2;
   }
 }
 
-let button = new UIElement();
-button.animate(0, 0, 'ease-in');
-// button.animate(0, 0, 'uneasy'); // Error!
+// ---------------------------------------------
 
-// ------------------------------------------------------------
-
-interface SomeElement {}
-
-function createElement(tagName: 'img'): SomeElement;
-function createElement(tagName: 'input'): SomeElement;
-function createElement(tagName: string): SomeElement {
-  console.log(tagName);
-  return {};
-}
-createElement('img');
-createElement('input');
-// createElement('some'); // Error!
-
-// ------------------------------------------------------------
-
-type DiceResult = 1 | 2 | 3 | 4 | 5 | 6;
-function rollDice(): DiceResult {
-  const diceResult = Math.random() * 6 + 1;
-  return diceResult as DiceResult;
+class BasicCalculator {
+  public constructor(protected value: number = 0) {}
+  public currentvalue(): number {
+    return this.value;
+  }
+  public add(operand: number): this {
+    this.value += operand;
+    return this;
+  }
+  public multiply(operand: number): this {
+    this.value *= operand;
+    return this;
+  }
 }
 
-console.log(rollDice());
-console.log(rollDice());
-console.log(rollDice());
-console.log(rollDice());
+class ScientificCalculator extends BasicCalculator {
+  public constructor(value = 0) {
+    super(value);
+  }
+
+  public sin(): this {
+    this.value = Math.sin(this.value);
+    return this;
+  }
+}
+
+let v = new ScientificCalculator(2).multiply(5).sin().add(1).currentvalue();
+console.log(v);
