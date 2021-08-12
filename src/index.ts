@@ -1,59 +1,35 @@
-interface Square {
-  kind: 'square';
-  size: number;
+function pluck<T, K extends keyof T>(o: T, propertyNames: K[]): Array<T[K]> {
+  return propertyNames.map((n) => o[n]);
 }
 
-interface Rectangle {
-  kind: 'rectangle';
-  width: number;
-  height: number;
+interface Car {
+  manufacturer: string;
+  model: string;
+  year: number;
 }
 
-interface Circle {
-  kind: 'circle';
-  radius: number;
+let taxi: Car = {
+  manufacturer: 'Toyota',
+  model: 'Camry',
+  year: 2014,
+};
+
+let makeAndModel: string[] = pluck(taxi, ['manufacturer', 'model']);
+
+let modelYear = pluck(taxi, ['model', 'year']);
+
+interface Person {
+  name: string;
+  age: number;
+  gender: string;
 }
 
-type Shape = Square | Rectangle | Circle;
+type PartialPerson = Partial<Person>;
 
-function area(s: Shape) {
-  switch (s.kind) {
-    case 'square':
-      return s.size * s.size;
-    case 'rectangle':
-      return s.height * s.width;
-    case 'circle':
-      return Math.PI * s.radius ** 2;
-  }
-}
+type Hi = keyof 'prop1' | 'prop2' | 'prop3';
 
-// ---------------------------------------------
+type ThreeStringProps = Record<'prop1' | 'prop2' | 'prop3', string>;
 
-class BasicCalculator {
-  public constructor(protected value: number = 0) {}
-  public currentvalue(): number {
-    return this.value;
-  }
-  public add(operand: number): this {
-    this.value += operand;
-    return this;
-  }
-  public multiply(operand: number): this {
-    this.value *= operand;
-    return this;
-  }
-}
+declare function f<T extends boolean>(x: T): T extends true ? string : number;
 
-class ScientificCalculator extends BasicCalculator {
-  public constructor(value = 0) {
-    super(value);
-  }
-
-  public sin(): this {
-    this.value = Math.sin(this.value);
-    return this;
-  }
-}
-
-let v = new ScientificCalculator(2).multiply(5).sin().add(1).currentvalue();
-console.log(v);
+let x = f(Math.random() < 0.5);
