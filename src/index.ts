@@ -1,35 +1,57 @@
-function pluck<T, K extends keyof T>(o: T, propertyNames: K[]): Array<T[K]> {
-  return propertyNames.map((n) => o[n]);
+interface Todo1 {
+  title: string;
+  description: string;
 }
 
-interface Car {
-  manufacturer: string;
-  model: string;
-  year: number;
+function updateTodo(todo: Todo1, fieldsTodoUpdate: Partial<Todo1>): Todo1 {
+  return { ...todo, ...fieldsTodoUpdate };
 }
 
-let taxi: Car = {
-  manufacturer: 'Toyota',
-  model: 'Camry',
-  year: 2014,
+const todo1: Todo1 = {
+  title: 'organize desk',
+  description: 'clear clutter',
 };
 
-let makeAndModel: string[] = pluck(taxi, ['manufacturer', 'model']);
+const todo2: Todo1 = updateTodo(todo1, {
+  description: 'throw out trash',
+});
 
-let modelYear = pluck(taxi, ['model', 'year']);
+// ----------------------------------------------------------------------------
 
-interface Person {
-  name: string;
-  age: number;
-  gender: string;
+interface Props {
+  a?: number;
+  b?: string;
 }
 
-type PartialPerson = Partial<Person>;
+const obj1: Props = { a: 5 };
+// const obj2: Required<Props> = { a: 5 };
+// Error : Property 'b' is missing in type '{ a: number; }' but required in type 'Required<Props>'.
+const obj3: Required<Props> = { a: 5, b: '2' };
 
-type Hi = keyof 'prop1' | 'prop2' | 'prop3';
+// ----------------------------------------------------------------------------
 
-type ThreeStringProps = Record<'prop1' | 'prop2' | 'prop3', string>;
+interface Todo3 {
+  title: string;
+}
 
-declare function f<T extends boolean>(x: T): T extends true ? string : number;
+const todo3: Readonly<Todo3> = {
+  title: 'Delete inactive users',
+};
 
-let x = f(Math.random() < 0.5);
+// todo3.title = 'hello';
+// Error : Cannot assign to 'title' because it is a read-only property.
+console.log(todo3.title);
+
+// ----------------------------------------------------------------------------
+
+interface PageInfo {
+  title: string;
+}
+
+type Page = 'home' | 'about' | 'contact';
+
+const nav: Record<Page, PageInfo> = {
+  about: { title: 'about' },
+  contact: { title: 'contact' },
+  home: { title: 'home' },
+};
