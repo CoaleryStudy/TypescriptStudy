@@ -1,57 +1,75 @@
 interface Todo1 {
   title: string;
   description: string;
+  completed: boolean;
 }
 
-function updateTodo(todo: Todo1, fieldsTodoUpdate: Partial<Todo1>): Todo1 {
-  return { ...todo, ...fieldsTodoUpdate };
-}
+type TodoPreview = Pick<Todo1, 'title' | 'completed'>;
 
-const todo1: Todo1 = {
-  title: 'organize desk',
-  description: 'clear clutter',
+const todo1: TodoPreview = {
+  title: 'Clean room',
+  completed: false,
 };
 
-const todo2: Todo1 = updateTodo(todo1, {
-  description: 'throw out trash',
-});
+console.log(todo1);
 
 // ----------------------------------------------------------------------------
 
-interface Props {
-  a?: number;
-  b?: string;
-}
-
-const obj1: Props = { a: 5 };
-// const obj2: Required<Props> = { a: 5 };
-// Error : Property 'b' is missing in type '{ a: number; }' but required in type 'Required<Props>'.
-const obj3: Required<Props> = { a: 5, b: '2' };
-
-// ----------------------------------------------------------------------------
-
-interface Todo3 {
+interface Todo2 {
   title: string;
+  description: string;
+  completed: boolean;
 }
 
-const todo3: Readonly<Todo3> = {
-  title: 'Delete inactive users',
+type TodoPreview2 = Omit<Todo2, 'description'>;
+
+const todo2: TodoPreview2 = {
+  title: 'Clean room',
+  completed: false,
 };
 
-// todo3.title = 'hello';
-// Error : Cannot assign to 'title' because it is a read-only property.
-console.log(todo3.title);
+console.log(todo2);
 
 // ----------------------------------------------------------------------------
 
-interface PageInfo {
-  title: string;
-}
+type T0 = Exclude<'a' | 'b' | 'c', 'a'>;
+// T0 = "b" | "c"
 
-type Page = 'home' | 'about' | 'contact';
+type T1 = Exclude<'a' | 'b' | 'c', 'a' | 'b'>;
+// T1 = "c"
 
-const nav: Record<Page, PageInfo> = {
-  about: { title: 'about' },
-  contact: { title: 'contact' },
-  home: { title: 'home' },
-};
+type T2 = Exclude<string | number | (() => void), Function>;
+// T2 = string | number
+
+// ----------------------------------------------------------------------------
+
+type T3 = Extract<'a' | 'b' | 'c', 'a' | 'f'>;
+// T3 = "a"
+
+type T4 = Extract<string | number | (() => void), Function>;
+// T4 = () => void
+
+// ----------------------------------------------------------------------------
+
+type T5 = NonNullable<string | number | undefined>;
+// T5 = string | number
+
+type T6 = NonNullable<string[] | null | undefined>;
+// T6 = string[]
+
+// ----------------------------------------------------------------------------
+
+type T7 = Parameters<() => string>;
+// T7 = []
+
+type T8 = Parameters<(s: string) => void>;
+// T8 = [s: string]
+
+type T9 = Parameters<<T>(arg: T) => T>;
+// T9 = [arg: unknown]
+
+declare function f1(arg: { a: number; b: string }): void;
+type T10 = Parameters<typeof f1>;
+// T10 = [arg: {a: number; b: string;}]
+
+// 그 외에 ConstructorParameters, ReturnType, InstanceType
